@@ -1,0 +1,31 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta charset="UTF-8">
+	<title>UI5 ECharts App</title>
+	<script
+		id="sap-ui-bootstrap"
+		src="/resources/sap-ui-core.js"
+		data-sap-ui-theme="sap_horizon"
+		data-sap-ui-resourceroots='{"ui5.echarts.app": "./"}'
+		data-sap-ui-compatVersion="edge"
+		data-sap-ui-async="true">
+	</script>
+	<script>
+		sap.ui.getCore().attachInit(function () {
+			sap.ui.require([
+				"sap/ui/core/mvc/XMLView"
+			], function (XMLView) {
+				XMLView.create({
+					viewName: "ui5.echarts.app.view.Main"
+				}).then(function (oView) {
+					oView.placeAt("content");
+				});
+			});
+		});
+	</script>
+</head>
+<body class="sapUiBody" id="content">
+</body>
+</html>

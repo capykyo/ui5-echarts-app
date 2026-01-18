@@ -1,0 +1,29 @@
+{
+  "name": "ui5-echarts-app",
+  "version": "1.0.0",
+  "main": "index.js",
+  "description": "OpenUI5 project integrated with Apache ECharts",
+  "scripts": {
+    "start": "ui5 serve --config=ui5.yaml --port 8080 -o index.html",
+    "build": "ui5 build --config=ui5.yaml --clean-dest --dest dist",
+    "lint": "eslint webapp"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "devDependencies": {
+    "@ui5/cli": "^4.0.39",
+    "ui5-middleware-livereload": "^3.2.1",
+    "ui5-tooling-modules": "^3.34.2"
+  },
+  "dependencies": {
+    "echarts": "^6.0.0"
+  },
+  "ui5": {
+    "dependencies": [
+      "ui5-middleware-livereload",
+      "ui5-tooling-modules"
+    ]
+  }
+}

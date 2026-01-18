@@ -1,0 +1,48 @@
+{
+	"_version": "1.32.0",
+	"sap.app": {
+		"id": "ui5.echarts.app",
+		"type": "application",
+		"i18n": "",
+		"title": "UI5 ECharts Application",
+		"description": "SAP UI5 application with ECharts integration",
+		"applicationVersion": {
+			"version": "1.0.0"
+		}
+	},
+	"sap.ui": {
+		"technology": "UI5",
+		"icons": {
+			"icon": "",
+			"favIcon": "",
+			"phone": "",
+			"phone@2": "",
+			"tablet": "",
+			"tablet@2": ""
+		},
+		"deviceTypes": {
+			"desktop": true,
+			"tablet": true,
+			"phone": true
+		}
+	},
+	"sap.ui5": {
+		"dependencies": {
+			"minUI5Version": "1.143.1",
+			"libs": {
+				"sap.m": {},
+				"sap.ui.core": {},
+				"sap.ui.layout": {}
+			}
+		},
+		"models": {},
+		"resources": {
+			"css": []
+		},
+		"rootView": {
+			"viewName": "ui5.echarts.app.view.Main",
+			"type": "XML",
+			"async": true
+		}
+	}
+}
