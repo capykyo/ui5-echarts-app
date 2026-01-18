@@ -2,17 +2,10 @@
 	controllerName="ui5.echarts.app.controller.Main"
 	xmlns:mvc="sap.ui.core.mvc"
 	xmlns="sap.m"
-	xmlns:app="ui5.echarts.app.controls"
 	displayBlock="true">
-	<Page 
-		title="ECharts Integration"
-		enableScrolling="false"
-		class="sapUiNoContentPadding">
-		<content>
-			<app:EChart
-				id="echart"
-				width="100%"
-				height="500px" />
-		</content>
-	</Page>
+	<App id="app">
+		<pages>
+			<!-- Pages will be loaded via routing -->
+		</pages>
+	</App>
 </mvc:View>

@@ -35,18 +35,7 @@
 				"sap.ui.layout": {}
 			}
 		},
-		"models": {
-			"": {
-				"dataSource": "northwind",
-				"type": "sap.ui.model.odata.v4.ODataModel",
-				"settings": {
-					"serviceUrl": "https://services.odata.org/V4/Northwind/Northwind.svc/",
-					"odataVersion": "4.0",
-					"autoExpandSelect": true,
-					"earlyRequests": true
-				}
-			}
-		},
+		"models": {},
 		"dataSources": {
 			"northwind": {
 				"uri": "https://services.odata.org/V4/Northwind/Northwind.svc/",
@@ -66,7 +55,56 @@
 		"rootView": {
 			"viewName": "ui5.echarts.app.view.Main",
 			"type": "XML",
-			"async": true
+			"async": true,
+			"id": "app"
+		},
+		"componentName": "ui5.echarts.app",
+		"routing": {
+			"config": {
+				"routerClass": "sap.m.routing.Router",
+				"viewType": "XML",
+				"viewPath": "ui5.echarts.app.view",
+				"controlId": "app",
+				"controlAggregation": "pages",
+				"async": true,
+				"bypassed": {
+					"target": "chartList"
+				}
+			},
+			"routes": [
+				{
+					"name": "chartList",
+					"pattern": "",
+					"target": "chartList"
+				},
+				{
+					"name": "chartDetail",
+					"pattern": "chart/{chartType}",
+					"target": "chartDetail"
+				},
+				{
+					"name": "optimization",
+					"pattern": "optimization/{scenario}",
+					"target": "optimization"
+				}
+			],
+			"targets": {
+				"chartList": {
+					"viewName": "ChartList",
+					"viewId": "chartList",
+					"viewLevel": 1
+				},
+				"chartDetail": {
+					"viewName": "ChartDetail",
+					"viewId": "chartDetail",
+					"viewLevel": 2
+				},
+				"optimization": {
+					"viewName": "Optimization",
+					"viewId": "optimization",
+					"viewLevel": 2
+				}
+			}
 		}
 	}
 }

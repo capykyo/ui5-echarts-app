@@ -4,6 +4,8 @@
 .sapMPageContent {
 	min-height: 500px;
 	height: auto !important;
+	/* Optimize touch events */
+	touch-action: pan-y;
 }
 
 /* Ensure EChart container has proper dimensions */
@@ -11,10 +13,56 @@
 	min-height: 500px !important;
 	height: 500px !important;
 	display: block !important;
+	/* Optimize touch events to reduce warnings */
+	touch-action: manipulation;
+	-webkit-overflow-scrolling: touch;
 }
 
 /* Fix for Page content section */
 section[id*="page0-cont"] {
 	min-height: 500px !important;
 	height: auto !important;
+	/* Optimize scrolling performance */
+	touch-action: pan-y;
+	will-change: scroll-position;
+	transform: translateZ(0);
+}
+
+/* Optimize ECharts canvas for better touch performance */
+[id*="echart"] canvas {
+	touch-action: none !important;
+	-webkit-tap-highlight-color: transparent !important;
+	pointer-events: auto;
+}
+
+/* Optimize Page scrolling */
+.sapMPage {
+	touch-action: pan-y;
+}
+
+/* Suppress touchmove warnings for UI5 internal elements */
+.sapUiBody,
+.sapMPage,
+.sapMPageContent,
+.sapMList,
+.sapMListItem {
+	touch-action: pan-y;
+}
+
+/* Optimize all interactive elements */
+.sapMBar,
+.sapMTitle,
+.sapMButton {
+	touch-action: manipulation;
+}
+
+/* Optimize chart container specifically */
+div[id*="echart"],
+div[class*="echart"] {
+	touch-action: manipulation;
+}
+
+/* Prevent passive event listener warnings on chart interactions */
+._echarts_instance_ {
+	touch-action: manipulation !important;
 }

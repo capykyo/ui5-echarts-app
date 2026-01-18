@@ -147,6 +147,9 @@ sap.ui.define([
 			oDomRef.style.display = "block";
 			oDomRef.style.minHeight = sHeight;
 			oDomRef.style.boxSizing = "border-box";
+			// Optimize touch events to reduce browser warnings
+			oDomRef.style.touchAction = "manipulation";
+			oDomRef.style.webkitTapHighlightColor = "transparent";
 
 			console.log("Container dimensions:", oDomRef.offsetWidth, "x", oDomRef.offsetHeight); // Debug log
 
@@ -158,10 +161,20 @@ sap.ui.define([
 
 			console.log("Initializing ECharts instance..."); // Debug log
 			try {
+				// Configure ECharts with optimized settings
 				this._chart = echarts.init(oDomRef, null, {
 					renderer: "canvas",
-					useDirtyRect: true // Performance optimization
+					useDirtyRect: true, // Performance optimization
+					devicePixelRatio: window.devicePixelRatio || 1
 				});
+
+				// Optimize touch event handling on chart container
+				if (oDomRef) {
+					oDomRef.style.touchAction = "manipulation";
+					oDomRef.style.webkitTapHighlightColor = "transparent";
+					// Set attribute for CSS targeting
+					oDomRef.setAttribute("data-echarts-optimized", "true");
+				}
 
 				console.log("ECharts instance created:", this._chart); // Debug log
 

@@ -1,0 +1,32 @@
+<mvc:View
+	controllerName="ui5.echarts.app.controller.ChartList"
+	xmlns:mvc="sap.ui.core.mvc"
+	xmlns="sap.m"
+	xmlns:core="sap.ui.core"
+	displayBlock="true">
+	<Page
+		title="ECharts Chart Gallery"
+		showNavButton="false">
+		<headerContent>
+			<Button
+				icon="sap-icon://action-settings"
+				text="Optimization"
+				press="onOptimizationPress"
+				type="Emphasized" />
+		</headerContent>
+		<content>
+			<List
+				id="chartList"
+				items="{/charts}"
+				mode="SingleSelectMaster"
+				selectionChange="onChartSelect">
+				<StandardListItem
+					title="{name}"
+					description="{description}"
+					icon="{icon}"
+					type="Navigation"
+					press="onChartPress" />
+			</List>
+		</content>
+	</Page>
+</mvc:View>

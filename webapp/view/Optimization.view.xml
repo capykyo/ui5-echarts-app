@@ -1,0 +1,77 @@
+<mvc:View
+	controllerName="ui5.echarts.app.controller.Optimization"
+	xmlns:mvc="sap.ui.core.mvc"
+	xmlns="sap.m"
+	xmlns:core="sap.ui.core"
+	xmlns:layout="sap.ui.layout"
+	xmlns:app="ui5.echarts.app.controls"
+	displayBlock="true">
+	<Page
+		title="Performance Optimization Comparison"
+		showNavButton="true"
+		navButtonPress="onNavBack">
+		<headerContent>
+			<Select
+				id="scenarioSelect"
+				items="{/scenarios}"
+				selectedKey="{/selectedScenario}"
+				change="onScenarioChange">
+				<items>
+					<core:Item key="{key}" text="{text}" />
+				</items>
+			</Select>
+		</headerContent>
+		<content>
+			<VBox class="sapUiMediumMargin">
+				<Text text="{/description}" class="sapUiMediumMarginBottom" />
+				<layout:Splitter height="500px">
+					<layout:contentAreas>
+						<VBox class="sapUiSmallMargin">
+							<Title text="Before Optimization" level="H3" />
+							<app:EChart
+								id="chartBefore"
+								width="100%"
+								height="450px" />
+						</VBox>
+						<VBox class="sapUiSmallMargin">
+							<Title text="After Optimization" level="H3" />
+							<app:EChart
+								id="chartAfter"
+								width="100%"
+								height="450px" />
+						</VBox>
+					</layout:contentAreas>
+				</layout:Splitter>
+				<Table
+					id="performanceTable"
+					items="{/performanceData}"
+					class="sapUiMediumMarginTop">
+					<columns>
+						<Column>
+							<Text text="Metric" />
+						</Column>
+						<Column>
+							<Text text="Before" />
+						</Column>
+						<Column>
+							<Text text="After" />
+						</Column>
+						<Column>
+							<Text text="Improvement" />
+						</Column>
+					</columns>
+					<items>
+						<ColumnListItem>
+							<cells>
+								<Text text="{metric}" />
+								<Text text="{before}" />
+								<Text text="{after}" />
+								<Text text="{improvement}" />
+							</cells>
+						</ColumnListItem>
+					</items>
+				</Table>
+			</VBox>
+		</content>
+	</Page>
+</mvc:View>

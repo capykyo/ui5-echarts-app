@@ -7,26 +7,7 @@ sap.ui.define([
 
 	return Controller.extend("ui5.echarts.app.controller.Main", {
 		onInit: function () {
-			this._bDataLoaded = false; // Flag to prevent multiple data loads
-			console.log("Main controller onInit called"); // Debug log
-		},
-
-		onAfterRendering: function () {
-			console.log("Main controller onAfterRendering called"); // Debug log
-			
-			// Ensure Page content has proper height
-			const oPage = this.byId("page") || this.getView().byId("__page0");
-			if (oPage) {
-				const oContent = oPage.getDomRef("cont");
-				if (oContent) {
-					oContent.style.minHeight = "500px";
-					oContent.style.height = "auto";
-					console.log("Fixed Page content height"); // Debug log
-				}
-			}
-			
-			// Load data directly using fetch API to avoid CORS issues
-			this._loadNorthwindData();
+			// Router is initialized in Component.js
 		},
 
 		/**

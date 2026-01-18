@@ -1,0 +1,22 @@
+<mvc:View
+	controllerName="ui5.echarts.app.controller.ChartDetail"
+	xmlns:mvc="sap.ui.core.mvc"
+	xmlns="sap.m"
+	xmlns:app="ui5.echarts.app.controls"
+	displayBlock="true">
+	<Page
+		title="{/title}"
+		showNavButton="true"
+		navButtonPress="onNavBack">
+		<content>
+			<VBox id="chartContainer" class="sapUiMediumMargin">
+				<Text text="{/description}" class="sapUiMediumMarginBottom" />
+				<app:EChart
+					id="chart"
+					width="100%"
+					height="500px"
+					visible="false" />
+			</VBox>
+		</content>
+	</Page>
+</mvc:View>

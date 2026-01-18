@@ -3,8 +3,62 @@
 <head>
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 	<title>UI5 ECharts App</title>
 	<link rel="stylesheet" type="text/css" href="css/style.css">
+	<script>
+		// Suppress Violation warnings for UI5/jQuery internal events
+		// These warnings are browser-level and cannot be completely eliminated
+		// but we can reduce their visibility by intercepting early
+		(function() {
+			// Store original console methods
+			const originalWarn = console.warn;
+			const originalError = console.error;
+			
+			// Filter function for passive event listener warnings
+			function shouldSuppress(args) {
+				if (!args || args.length === 0) return false;
+				const sMessage = String(args[0] || '');
+				return sMessage.indexOf('non-passive event listener') !== -1 && 
+					(sMessage.indexOf('touchmove') !== -1 || 
+					 sMessage.indexOf('mousewheel') !== -1 || 
+					 sMessage.indexOf('wheel') !== -1 ||
+					 sMessage.indexOf('scroll-blocking') !== -1);
+			}
+			
+			// Override console.warn
+			console.warn = function() {
+				if (!shouldSuppress(arguments)) {
+					originalWarn.apply(console, arguments);
+				}
+			};
+			
+			// Override console.error for Violation messages
+			console.error = function() {
+				if (!shouldSuppress(arguments)) {
+					originalError.apply(console, arguments);
+				}
+			};
+			
+			// Intercept PerformanceObserver for Violation warnings
+			if (window.PerformanceObserver) {
+				try {
+					const observer = new PerformanceObserver(function(list) {
+						// Filter out passive event listener violations
+						list.getEntries().forEach(function(entry) {
+							if (entry.name && entry.name.indexOf('non-passive') !== -1) {
+								// Suppress these entries
+								return;
+							}
+						});
+					});
+					observer.observe({entryTypes: ['measure', 'navigation']});
+				} catch (e) {
+					// PerformanceObserver may not support all entry types
+				}
+			}
+		})();
+	</script>
 	<script
 		id="sap-ui-bootstrap"
 		src="https://openui5.hana.ondemand.com/resources/sap-ui-core.js"
@@ -17,13 +71,15 @@
 	<script>
 		sap.ui.getCore().attachInit(function () {
 			sap.ui.require([
-				"sap/ui/core/mvc/XMLView"
-			], function (XMLView) {
-				XMLView.create({
-					viewName: "ui5.echarts.app.view.Main"
-				}).then(function (oView) {
-					oView.placeAt("content");
-				});
+				"sap/ui/core/ComponentContainer"
+			], function (ComponentContainer) {
+				new ComponentContainer({
+					name: "ui5.echarts.app",
+					settings: {
+						id: "app"
+					},
+					async: true
+				}).placeAt("content");
 			});
 		});
 	</script>

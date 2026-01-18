@@ -1,0 +1,13 @@
+<mvc:View
+	controllerName="ui5.echarts.app.controller.chart.ScatterChart"
+	xmlns:mvc="sap.ui.core.mvc"
+	xmlns="sap.m"
+	xmlns:app="ui5.echarts.app.controls"
+	displayBlock="true">
+	<VBox class="sapUiMediumMargin">
+		<app:EChart
+			id="chartControl"
+			width="100%"
+			height="500px" />
+	</VBox>
+</mvc:View>
