@@ -1,0 +1,20 @@
+/* Custom styles for ECharts integration */
+
+/* Ensure Page content has proper height */
+.sapMPageContent {
+	min-height: 500px;
+	height: auto !important;
+}
+
+/* Ensure EChart container has proper dimensions */
+[id*="echart"] {
+	min-height: 500px !important;
+	height: 500px !important;
+	display: block !important;
+}
+
+/* Fix for Page content section */
+section[id*="page0-cont"] {
+	min-height: 500px !important;
+	height: auto !important;
+}

@@ -4,7 +4,10 @@
 	xmlns="sap.m"
 	xmlns:app="ui5.echarts.app.controls"
 	displayBlock="true">
-	<Page title="ECharts Integration">
+	<Page 
+		title="ECharts Integration"
+		enableScrolling="false"
+		class="sapUiNoContentPadding">
 		<content>
 			<app:EChart
 				id="echart"

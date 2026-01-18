@@ -6,7 +6,8 @@
   "scripts": {
     "start": "ui5 serve --config=ui5.yaml --port 8080 -o index.html",
     "build": "ui5 build --config=ui5.yaml --clean-dest --dest dist",
-    "lint": "eslint webapp"
+    "lint": "eslint webapp",
+    "mock-data": "node scripts/generate-mock-data.js && npx json-server mock-data/mock-data.json --port 3000"
   },
   "keywords": [],
   "author": "",
@@ -18,7 +19,8 @@
     "ui5-tooling-modules": "^3.34.2"
   },
   "dependencies": {
-    "echarts": "^6.0.0"
+    "echarts": "^6.0.0",
+    "json-server": "^1.0.0-beta.3"
   },
   "ui5": {
     "dependencies": [

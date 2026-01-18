@@ -35,9 +35,33 @@
 				"sap.ui.layout": {}
 			}
 		},
-		"models": {},
+		"models": {
+			"": {
+				"dataSource": "northwind",
+				"type": "sap.ui.model.odata.v4.ODataModel",
+				"settings": {
+					"serviceUrl": "https://services.odata.org/V4/Northwind/Northwind.svc/",
+					"odataVersion": "4.0",
+					"autoExpandSelect": true,
+					"earlyRequests": true
+				}
+			}
+		},
+		"dataSources": {
+			"northwind": {
+				"uri": "https://services.odata.org/V4/Northwind/Northwind.svc/",
+				"type": "OData",
+				"settings": {
+					"odataVersion": "4.0"
+				}
+			}
+		},
 		"resources": {
-			"css": []
+			"css": [
+				{
+					"uri": "css/style.css"
+				}
+			]
 		},
 		"rootView": {
 			"viewName": "ui5.echarts.app.view.Main",
