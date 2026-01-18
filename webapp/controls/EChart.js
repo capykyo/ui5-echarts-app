@@ -75,8 +75,16 @@ sap.ui.define([
 		 */
 		_loadEChartsFromCDN: function () {
 			return new Promise((resolve, reject) => {
+				// Check if ECharts is already loaded
+				if (typeof echarts !== "undefined") {
+					this._bEChartsLoaded = true;
+					resolve();
+					return;
+				}
+
+				// Check if script is already being loaded
 				if (document.getElementById("echarts-script")) {
-					// Already loading or loaded
+					// Already loading, poll until echarts is available
 					const checkInterval = setInterval(() => {
 						if (typeof echarts !== "undefined") {
 							clearInterval(checkInterval);
@@ -84,9 +92,18 @@ sap.ui.define([
 							resolve();
 						}
 					}, 100);
+
+					// Set timeout to prevent infinite polling (10 seconds)
+					setTimeout(() => {
+						clearInterval(checkInterval);
+						if (typeof echarts === "undefined") {
+							reject(new Error("ECharts failed to load within timeout period"));
+						}
+					}, 10000);
 					return;
 				}
 
+				// Create and load script
 				const oScript = document.createElement("script");
 				oScript.id = "echarts-script";
 				oScript.src = "https://cdn.jsdelivr.net/npm/echarts@6.0.0/dist/echarts.min.js";
@@ -94,7 +111,9 @@ sap.ui.define([
 					this._bEChartsLoaded = true;
 					resolve();
 				};
-				oScript.onerror = reject;
+				oScript.onerror = () => {
+					reject(new Error("Failed to load ECharts from CDN"));
+				};
 				document.head.appendChild(oScript);
 			});
 		},

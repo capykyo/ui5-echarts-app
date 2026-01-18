@@ -38,6 +38,9 @@ sap.ui.define([
 				return;
 			}
 
+			// Set flag immediately before starting fetch to prevent concurrent requests
+			this._bDataLoaded = true;
+
 			Log.info("Starting to load Northwind data...");
 			console.log("Loading Orders from Northwind using fetch..."); // Debug log
 
@@ -63,10 +66,11 @@ sap.ui.define([
 					if (aOrders.length > 0) {
 						console.log("First order sample:", aOrders[0]); // Debug log
 					}
-					this._bDataLoaded = true;
 					this._updateChartWithOrders(aOrders);
 				})
 				.catch(oError => {
+					// Reset flag on error to allow retry
+					this._bDataLoaded = false;
 					console.error("Fetch error:", oError); // Debug log
 					Log.error("Error loading Northwind data:", oError);
 					this._showError("Failed to load data from Northwind service. Please check your internet connection.");
@@ -152,10 +156,22 @@ sap.ui.define([
 						type: "cross"
 					},
 					formatter: function (params) {
-						let sResult = params[0].axisValueLabel + "<br/>";
+						// Validate params array
+						if (!params || !Array.isArray(params) || params.length === 0) {
+							return "";
+						}
+
+						// Safely access axisValueLabel
+						const sAxisValue = params[0].axisValueLabel || params[0].axisValue || "";
+						let sResult = sAxisValue + "<br/>";
+
+						// Safely iterate through params
 						params.forEach(param => {
-							sResult += param.seriesName + ": $" + param.value[1].toFixed(2) + "<br/>";
+							if (param && param.seriesName && param.value && Array.isArray(param.value) && param.value.length >= 2) {
+								sResult += param.seriesName + ": $" + param.value[1].toFixed(2) + "<br/>";
+							}
 						});
+
 						return sResult;
 					}
 				},
