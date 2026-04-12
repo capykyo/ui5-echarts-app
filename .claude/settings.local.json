@@ -26,7 +26,13 @@
       "Bash(curl -s \"http://localhost:3000/Products?_page=1&_per_page=3\")",
       "Bash(node -e ':*)",
       "mcp__chrome-devtools__list_pages",
-      "mcp__chrome-devtools__fill"
+      "mcp__chrome-devtools__fill",
+      "mcp__chrome-devtools__new_page",
+      "mcp__chrome-devtools__resize_page",
+      "mcp__chrome-devtools__close_page",
+      "mcp__chrome-devtools__select_page",
+      "mcp__chrome-devtools__get_console_message",
+      "mcp__chrome-devtools__emulate"
     ]
   }
 }

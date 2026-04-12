@@ -766,3 +766,335 @@ div[class*="echart"] {
 /* Performance table improvement column colors */
 .obsImprovementGood { color: #34d399 !important; font-weight: 600; }
 .obsImprovementBad  { color: #f43f5e !important; font-weight: 600; }
+
+/* ============================================================
+   DASHBOARD PAGE
+   ============================================================ */
+
+.dbRoot {
+  display: flex;
+  height: 100vh;
+  overflow: hidden;
+  background: var(--obs-bg);
+  font-family: var(--obs-body);
+}
+
+/* ── Sidebar ── */
+.dbSidebar {
+  width: 192px;
+  flex-shrink: 0;
+  background: var(--obs-surface);
+  border-right: 1px solid var(--obs-border);
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.dbSidebarLogo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 16px 14px 14px;
+  border-bottom: 1px solid var(--obs-border);
+  margin-bottom: 8px;
+}
+
+.dbLogoMark {
+  font-size: 22px;
+  color: var(--obs-amber);
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.dbLogoText {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.dbLogoTitle {
+  font-family: var(--obs-display);
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--obs-text-pri);
+  line-height: 1.2;
+}
+
+.dbLogoSub {
+  font-size: 9px;
+  color: var(--obs-text-muted);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.dbSidebarSection {
+  padding: 8px 14px 4px;
+  font-size: 9px;
+  font-family: var(--obs-mono);
+  letter-spacing: 0.12em;
+  color: var(--obs-text-muted);
+  text-transform: uppercase;
+}
+
+.dbSidebarSectionTools {
+  margin-top: 8px;
+}
+
+.dbNavItem {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 14px;
+  font-size: 12px;
+  color: var(--obs-text-sec);
+  cursor: pointer;
+  border-left: 2px solid transparent;
+  transition: all var(--obs-transition);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.dbNavItem:hover {
+  color: var(--obs-text-pri);
+  background: var(--obs-surface-2);
+  border-left-color: var(--obs-border);
+}
+
+.dbNavActive {
+  color: var(--obs-amber) !important;
+  background: var(--obs-amber-glow) !important;
+  border-left-color: var(--obs-amber) !important;
+}
+
+.dbNavIcon {
+  font-size: 13px;
+  width: 16px;
+  text-align: center;
+  flex-shrink: 0;
+  opacity: 0.8;
+}
+
+.dbSidebarFooter {
+  margin-top: auto;
+  padding: 12px 14px;
+  border-top: 1px solid var(--obs-border);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.dbFooterStatus {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 10px;
+  color: var(--obs-text-muted);
+}
+
+.dbStatusDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #34d399;
+  flex-shrink: 0;
+  box-shadow: 0 0 6px #34d399;
+}
+
+.dbFooterBack {
+  font-size: 11px;
+  color: var(--obs-text-muted);
+  cursor: pointer;
+  padding: 4px 0;
+  transition: color var(--obs-transition);
+}
+
+.dbFooterBack:hover {
+  color: var(--obs-blue);
+}
+
+/* ── Main area ── */
+.dbMain {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 0 16px 16px;
+  gap: 12px;
+  min-width: 0;
+}
+
+/* ── Top bar ── */
+.dbTopBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 0 8px;
+  border-bottom: 1px solid var(--obs-border);
+  flex-shrink: 0;
+  gap: 16px;
+}
+
+.dbPageTitle {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  min-width: 0;
+}
+
+.dbPageTitle > span:first-child {
+  font-family: var(--obs-display);
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--obs-text-pri);
+  white-space: nowrap;
+}
+
+.dbPageSubtitle {
+  font-size: 11px;
+  color: var(--obs-text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.dbTopBarRight {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.dbKpiChip {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  padding: 5px 10px;
+  background: var(--obs-surface-2);
+  border: 1px solid var(--obs-border);
+  border-radius: var(--obs-radius);
+  gap: 1px;
+}
+
+.dbKpiLabel {
+  font-size: 9px;
+  color: var(--obs-text-muted);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.dbKpiValue {
+  font-family: var(--obs-mono);
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--obs-amber);
+}
+
+.dbToggleBtn {
+  padding: 6px 12px;
+  background: var(--obs-surface-2);
+  border: 1px solid var(--obs-border);
+  border-radius: var(--obs-radius);
+  color: var(--obs-text-sec);
+  font-size: 11px;
+  cursor: pointer;
+  transition: all var(--obs-transition);
+  font-family: var(--obs-body);
+}
+
+.dbToggleBtn:hover {
+  border-color: var(--obs-blue);
+  color: var(--obs-blue);
+}
+
+.dbToggleBtnActive {
+  background: rgba(91,156,246,0.12) !important;
+  border-color: var(--obs-blue) !important;
+  color: var(--obs-blue) !important;
+}
+
+/* ── Chart rows ── */
+.dbRow {
+  display: flex;
+  gap: 12px;
+  flex-shrink: 0;
+}
+
+.dbCard {
+  background: var(--obs-surface);
+  border: 1px solid var(--obs-border);
+  border-radius: var(--obs-radius-lg);
+  padding: 10px 12px 8px;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  transition: border-color var(--obs-transition);
+}
+
+.dbCard:hover {
+  border-color: rgba(255,255,255,0.13);
+}
+
+.dbCardHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 4px;
+  flex-shrink: 0;
+}
+
+.dbCardTitle {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--obs-text-sec);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.dbCardBadge {
+  font-family: var(--obs-mono);
+  font-size: 8px;
+  padding: 2px 6px;
+  background: rgba(52,211,153,0.15);
+  color: #34d399;
+  border-radius: 3px;
+  letter-spacing: 0.1em;
+  animation: dbPulse 2.5s ease-in-out infinite;
+}
+
+@keyframes dbPulse {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.45; }
+}
+
+/* Width variants */
+.dbCardFull { flex: 1; }
+.dbCardMd   { flex: 2; }
+.dbCardSm   { flex: 1; }
+
+/* ── EChart control inside cards - remove chrome UI5 adds ── */
+.dbCard .sapUiView { width: 100%; }
+
+/* ── Chart loading overlay ── */
+.dbLoadingOverlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(17, 21, 32, 0.7);
+  border-radius: var(--obs-radius);
+  z-index: 10;
+  pointer-events: none;
+}
+
+.dbLoadingSpinner {
+  width: 24px;
+  height: 24px;
+  border: 2px solid rgba(91, 156, 246, 0.2);
+  border-top-color: #5b9cf6;
+  border-radius: 50%;
+  animation: obsSpin 0.7s linear infinite;
+}

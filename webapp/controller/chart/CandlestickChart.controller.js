@@ -48,42 +48,22 @@ sap.ui.define([
 					data: aData.map(function (d) {
 						return new Date(d[0]).toLocaleDateString();
 					}),
-					boundaryGap: false,
-					axisLine: {
-						onZero: false
-					},
-					splitLine: {
-						show: false
-					},
-					min: "dataMin",
-					max: "dataMax"
+					boundaryGap: true,
+					axisLine: { onZero: false },
+					splitLine: { show: false }
 				},
 				yAxis: {
 					scale: true,
-					splitArea: {
-						show: true
-					}
+					splitArea: { show: true }
 				},
 				dataZoom: [
-					{
-						type: "inside",
-						xAxisIndex: [0, 1],
-						start: 0,
-						end: 100
-					},
-					{
-						show: true,
-						xAxisIndex: [0, 1],
-						type: "slider",
-						top: "90%",
-						start: 0,
-						end: 100
-					}
+					{ type: "inside", xAxisIndex: [0, 1], start: 0, end: 100 },
+					{ show: true, xAxisIndex: [0, 1], type: "slider", top: "90%", start: 0, end: 100 }
 				],
 				series: [{
 					name: "Price",
 					type: "candlestick",
-					data: aData,
+					data: aData.map(function (d) { return [d[1], d[2], d[3], d[4]]; }),
 					itemStyle: {
 						color: "#26a69a",
 						color0: "#ef5350",

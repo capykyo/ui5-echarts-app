@@ -1,0 +1,162 @@
+<mvc:View
+	controllerName="ui5.echarts.app.controller.Dashboard"
+	xmlns:mvc="sap.ui.core.mvc"
+	xmlns="sap.m"
+	xmlns:core="sap.ui.core"
+	xmlns:html="http://www.w3.org/1999/xhtml"
+	xmlns:app="ui5.echarts.app.controls"
+	displayBlock="true">
+
+	<html:div class="dbRoot">
+
+		<!-- ── Sidebar ── -->
+		<html:div class="dbSidebar">
+			<html:div class="dbSidebarLogo">
+				<html:span class="dbLogoMark">⬡</html:span>
+				<html:div class="dbLogoText">
+					<html:span class="dbLogoTitle">UI5 ECharts</html:span>
+					<html:span class="dbLogoSub">Application</html:span>
+				</html:div>
+			</html:div>
+
+			<html:div class="dbSidebarSection">CHARTS</html:div>
+			<html:div class="dbNavItem dbNavActive" id="dbNav-line" data-chart="line">
+				<html:span class="dbNavIcon">╱</html:span>Line Chart
+			</html:div>
+			<html:div class="dbNavItem" id="dbNav-bar" data-chart="bar">
+				<html:span class="dbNavIcon">▐</html:span>Bar Chart
+			</html:div>
+			<html:div class="dbNavItem" id="dbNav-pie" data-chart="pie">
+				<html:span class="dbNavIcon">◕</html:span>Pie Chart
+			</html:div>
+			<html:div class="dbNavItem" id="dbNav-scatter" data-chart="scatter">
+				<html:span class="dbNavIcon">⠿</html:span>Scatter Chart
+			</html:div>
+			<html:div class="dbNavItem" id="dbNav-radar" data-chart="radar">
+				<html:span class="dbNavIcon">⬡</html:span>Radar Chart
+			</html:div>
+			<html:div class="dbNavItem" id="dbNav-heatmap" data-chart="heatmap">
+				<html:span class="dbNavIcon">▦</html:span>Heatmap
+			</html:div>
+			<html:div class="dbNavItem" id="dbNav-gauge" data-chart="gauge">
+				<html:span class="dbNavIcon">◉</html:span>Gauge
+			</html:div>
+			<html:div class="dbNavItem" id="dbNav-candlestick" data-chart="candlestick">
+				<html:span class="dbNavIcon">⋮</html:span>Candlestick
+			</html:div>
+			<html:div class="dbNavItem" id="dbNav-funnel" data-chart="funnel">
+				<html:span class="dbNavIcon">▽</html:span>Funnel Chart
+			</html:div>
+			<html:div class="dbNavItem" id="dbNav-tree" data-chart="tree">
+				<html:span class="dbNavIcon">⬦</html:span>Tree Chart
+			</html:div>
+
+			<html:div class="dbSidebarSection dbSidebarSectionTools">TOOLS</html:div>
+			<html:div class="dbNavItem" id="dbNav-optimization">
+				<html:span class="dbNavIcon">⚡</html:span>Performance
+			</html:div>
+
+			<html:div class="dbSidebarFooter">
+				<html:div class="dbFooterStatus">
+					<html:span class="dbStatusDot"></html:span>
+					<html:span id="dbDataSourceLabel">Northwind OData V4</html:span>
+				</html:div>
+				<html:div class="dbFooterBack" id="dbNavBack">← Back to List</html:div>
+			</html:div>
+		</html:div>
+
+		<!-- ── Main content ── -->
+		<html:div class="dbMain">
+
+			<!-- Top bar -->
+			<html:div class="dbTopBar">
+				<html:div class="dbPageTitle">
+					<html:span id="dbChartTitle">Line Chart</html:span>
+					<html:span class="dbPageSubtitle" id="dbChartSubtitle">Orders Freight Over Time by Country</html:span>
+				</html:div>
+				<html:div class="dbTopBarRight">
+					<html:div class="dbKpiChip" id="dbKpi1">
+						<html:span class="dbKpiLabel">Total Orders</html:span>
+						<html:span class="dbKpiValue" id="dbKpiOrders">—</html:span>
+					</html:div>
+					<html:div class="dbKpiChip" id="dbKpi2">
+						<html:span class="dbKpiLabel">Avg Freight</html:span>
+						<html:span class="dbKpiValue" id="dbKpiFreight">—</html:span>
+					</html:div>
+					<html:div class="dbKpiChip" id="dbKpi3">
+						<html:span class="dbKpiLabel">Countries</html:span>
+						<html:span class="dbKpiValue" id="dbKpiCountries">—</html:span>
+					</html:div>
+					<html:button class="dbToggleBtn" id="dbMockToggle">Mock Data</html:button>
+				</html:div>
+			</html:div>
+
+			<!-- Row 1: Large hero chart -->
+			<html:div class="dbRow dbRowHero">
+				<html:div class="dbCard dbCardFull">
+					<html:div class="dbCardHeader">
+						<html:span class="dbCardTitle">Orders Freight Over Time</html:span>
+						<html:span class="dbCardBadge" id="dbLineBadge">LIVE</html:span>
+					</html:div>
+					<app:EChart id="dbChartLine" width="100%" height="280px" />
+				</html:div>
+			</html:div>
+
+			<!-- Row 2: Bar + Pie + Stats -->
+			<html:div class="dbRow dbRowMid">
+				<html:div class="dbCard dbCardMd">
+					<html:div class="dbCardHeader">
+						<html:span class="dbCardTitle">Top Products by Price</html:span>
+					</html:div>
+					<app:EChart id="dbChartBar" width="100%" height="220px" />
+				</html:div>
+
+				<html:div class="dbCard dbCardSm">
+					<html:div class="dbCardHeader">
+						<html:span class="dbCardTitle">Products by Category</html:span>
+					</html:div>
+					<app:EChart id="dbChartPie" width="100%" height="220px" />
+				</html:div>
+
+				<html:div class="dbCard dbCardSm">
+					<html:div class="dbCardHeader">
+						<html:span class="dbCardTitle">Gauge Metric</html:span>
+					</html:div>
+					<app:EChart id="dbChartGauge" width="100%" height="220px" />
+				</html:div>
+			</html:div>
+
+			<!-- Row 3: Scatter + Funnel + Tree + Candlestick -->
+			<html:div class="dbRow dbRowBot">
+				<html:div class="dbCard dbCardSm">
+					<html:div class="dbCardHeader">
+						<html:span class="dbCardTitle">Scatter Distribution</html:span>
+					</html:div>
+					<app:EChart id="dbChartScatter" width="100%" height="200px" />
+				</html:div>
+
+				<html:div class="dbCard dbCardSm">
+					<html:div class="dbCardHeader">
+						<html:span class="dbCardTitle">Funnel Analysis</html:span>
+					</html:div>
+					<app:EChart id="dbChartFunnel" width="100%" height="200px" />
+				</html:div>
+
+				<html:div class="dbCard dbCardSm">
+					<html:div class="dbCardHeader">
+						<html:span class="dbCardTitle">Product Tree</html:span>
+					</html:div>
+					<app:EChart id="dbChartTree" width="100%" height="200px" />
+				</html:div>
+
+				<html:div class="dbCard dbCardSm">
+					<html:div class="dbCardHeader">
+						<html:span class="dbCardTitle">Candlestick</html:span>
+					</html:div>
+					<app:EChart id="dbChartCandlestick" width="100%" height="200px" />
+				</html:div>
+			</html:div>
+
+		</html:div><!-- /dbMain -->
+	</html:div><!-- /dbRoot -->
+</mvc:View>

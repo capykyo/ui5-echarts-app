@@ -17,6 +17,11 @@
 				press="onMockDataToggle"
 				type="Transparent" />
 			<Button
+				icon="sap-icon://grid"
+				text="Dashboard"
+				press="onDashboardPress"
+				type="Emphasized" />
+			<Button
 				icon="sap-icon://action-settings"
 				text="Optimization"
 				press="onOptimizationPress"

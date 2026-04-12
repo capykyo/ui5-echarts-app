@@ -153,6 +153,14 @@ sap.ui.define([
 		},
 
 		onNavBack: function () {
+			var oHistory = sap.ui.require("sap/ui/core/routing/History");
+			if (oHistory) {
+				var oPreviousHash = oHistory.getInstance().getPreviousHash();
+				if (oPreviousHash !== undefined) {
+					window.history.go(-1);
+					return;
+				}
+			}
 			this.getRouter().navTo("chartList");
 		},
 

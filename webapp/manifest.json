@@ -86,6 +86,11 @@
 					"name": "optimization",
 					"pattern": "optimization/{scenario}",
 					"target": "optimization"
+				},
+				{
+					"name": "dashboard",
+					"pattern": "dashboard",
+					"target": "dashboard"
 				}
 			],
 			"targets": {
@@ -102,6 +107,11 @@
 				"optimization": {
 					"viewName": "Optimization",
 					"viewId": "optimization",
+					"viewLevel": 2
+				},
+				"dashboard": {
+					"viewName": "Dashboard",
+					"viewId": "dashboard",
 					"viewLevel": 2
 				}
 			}
