@@ -1,8 +1,10 @@
 sap.ui.define([
 	"sap/ui/core/mvc/Controller",
 	"sap/ui/model/json/JSONModel",
-	"sap/ui/core/mvc/XMLView"
-], function (Controller, JSONModel, XMLView) {
+	"sap/ui/core/mvc/XMLView",
+	"sap/m/MessageToast",
+	"ui5/echarts/app/model/ChartData"
+], function (Controller, JSONModel, XMLView, MessageToast, ChartData) {
 	"use strict";
 
 	return Controller.extend("ui5.echarts.app.controller.ChartDetail", {
@@ -24,7 +26,9 @@ sap.ui.define([
 			const mChartInfo = this._getChartInfo(sChartType);
 			const oModel = new JSONModel({
 				title: mChartInfo.title,
-				description: mChartInfo.description
+				description: mChartInfo.description,
+				dataSource: ChartData.isUsingMockData() ? "MOCK DATA (localhost:3000)" : "NORTHWIND OData V4",
+				useMockData: ChartData.isUsingMockData()
 			});
 			this.getView().setModel(oModel);
 
@@ -47,7 +51,7 @@ sap.ui.define([
 			// Load chart-specific view dynamically
 			const sViewName = "ui5.echarts.app.view.chart." + this._capitalizeFirst(sChartType) + "Chart";
 			const sControllerName = "ui5.echarts.app.controller.chart." + this._capitalizeFirst(sChartType);
-			
+
 			XMLView.create({
 				viewName: sViewName,
 				controllerName: sControllerName
@@ -58,33 +62,41 @@ sap.ui.define([
 					if (oPlaceholder) {
 						const iPlaceholderIndex = oContainer.indexOfItem(oPlaceholder);
 						if (iPlaceholderIndex >= 0) {
-							// Insert new chart view at placeholder position
 							oContainer.insertItem(oChartView, iPlaceholderIndex);
 							oContainer.removeItem(oPlaceholder);
 							oPlaceholder.destroy();
 						} else {
-							// Placeholder already removed, just add the new view
 							oContainer.addItem(oChartView);
 						}
 					} else {
-						// No placeholder, just add the new view
 						oContainer.addItem(oChartView);
 					}
-					// Store reference to loaded chart view
 					this._oLoadedChartView = oChartView;
 				}
 			}.bind(this)).catch(function (oError) {
 				sap.ui.require(["sap/base/Log"], function (Log) {
 					Log.error("Failed to load chart view: " + sViewName, oError);
 				});
-				// Fallback: load data directly in this controller
 				this._loadChartData(sChartType);
 			}.bind(this));
 		},
 
+		onMockDataToggle: function (oEvent) {
+			const bPressed = oEvent.getSource().getPressed();
+			ChartData.setUseMockData(bPressed);
+			localStorage.setItem("ui5.echarts.useMockData", String(bPressed));
+
+			// Update model
+			const oModel = this.getView().getModel();
+			oModel.setProperty("/useMockData", bPressed);
+			oModel.setProperty("/dataSource", bPressed ? "MOCK DATA (localhost:3000)" : "NORTHWIND OData V4");
+
+			// Reload the current chart with new data source
+			MessageToast.show("Data source: " + (bPressed ? "Mock Data (localhost:3000)" : "Northwind OData"));
+			this._loadChart(this._sChartType);
+		},
+
 		_loadChartData: function (sChartType) {
-			// This will be called if dynamic view loading fails
-			// Load data based on chart type
 			sap.ui.require([
 				"ui5/echarts/app/model/ChartData"
 			], function (ChartData) {
@@ -100,10 +112,8 @@ sap.ui.define([
 				return;
 			}
 
-			// Get chart option based on type
 			const oOption = this._getChartOption(sChartType, oData);
-			
-			// Wait for chart to be ready
+
 			if (oChart._chart) {
 				oChart.setOption(oOption);
 			} else {
@@ -114,8 +124,6 @@ sap.ui.define([
 		},
 
 		_getChartOption: function (sChartType, oData) {
-			// This will be implemented in chart-specific controllers
-			// For now, return basic structure
 			return {
 				title: {
 					text: this._getChartInfo(sChartType).title
@@ -126,46 +134,16 @@ sap.ui.define([
 
 		_getChartInfo: function (sChartType) {
 			const mChartInfo = {
-				line: {
-					title: "Line Chart",
-					description: "Time series data visualization with multiple series support"
-				},
-				bar: {
-					title: "Bar Chart",
-					description: "Categorical data comparison visualization"
-				},
-				pie: {
-					title: "Pie Chart",
-					description: "Proportional data representation"
-				},
-				scatter: {
-					title: "Scatter Chart",
-					description: "Two-dimensional relationship visualization"
-				},
-				radar: {
-					title: "Radar Chart",
-					description: "Multi-dimensional comparison"
-				},
-				heatmap: {
-					title: "Heatmap",
-					description: "Time-category heat distribution"
-				},
-				gauge: {
-					title: "Gauge",
-					description: "Key metrics dashboard"
-				},
-				candlestick: {
-					title: "Candlestick Chart",
-					description: "Price fluctuation visualization"
-				},
-				funnel: {
-					title: "Funnel Chart",
-					description: "Conversion process visualization"
-				},
-				tree: {
-					title: "Tree Chart",
-					description: "Hierarchical relationship display"
-				}
+				line:        { title: "Line Chart",        description: "Time series data visualization with multiple series support" },
+				bar:         { title: "Bar Chart",         description: "Categorical data comparison visualization" },
+				pie:         { title: "Pie Chart",         description: "Proportional data representation" },
+				scatter:     { title: "Scatter Chart",     description: "Two-dimensional relationship visualization" },
+				radar:       { title: "Radar Chart",       description: "Multi-dimensional comparison" },
+				heatmap:     { title: "Heatmap",           description: "Time-category heat distribution" },
+				gauge:       { title: "Gauge",             description: "Key metrics dashboard" },
+				candlestick: { title: "Candlestick Chart", description: "Price fluctuation visualization" },
+				funnel:      { title: "Funnel Chart",      description: "Conversion process visualization" },
+				tree:        { title: "Tree Chart",        description: "Hierarchical relationship display" }
 			};
 			return mChartInfo[sChartType] || { title: "Chart", description: "" };
 		},
@@ -183,7 +161,6 @@ sap.ui.define([
 		},
 
 		onExit: function () {
-			// Clean up loaded chart view
 			if (this._oLoadedChartView) {
 				this._oLoadedChartView.destroy();
 				this._oLoadedChartView = null;

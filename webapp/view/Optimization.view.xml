@@ -4,10 +4,11 @@
 	xmlns="sap.m"
 	xmlns:core="sap.ui.core"
 	xmlns:layout="sap.ui.layout"
+	xmlns:html="http://www.w3.org/1999/xhtml"
 	xmlns:app="ui5.echarts.app.controls"
 	displayBlock="true">
 	<Page
-		title="Performance Optimization Comparison"
+		title="Performance Optimization"
 		showNavButton="true"
 		navButtonPress="onNavBack">
 		<headerContent>
@@ -22,43 +23,47 @@
 			</Select>
 		</headerContent>
 		<content>
-			<VBox class="sapUiMediumMargin">
-				<Text text="{/description}" class="sapUiMediumMarginBottom" />
-				<layout:Splitter height="500px">
-					<layout:contentAreas>
-						<VBox class="sapUiSmallMargin">
-							<Title text="Before Optimization" level="H3" />
-							<app:EChart
-								id="chartBefore"
-								width="100%"
-								height="450px" />
-						</VBox>
-						<VBox class="sapUiSmallMargin">
-							<Title text="After Optimization" level="H3" />
-							<app:EChart
-								id="chartAfter"
-								width="100%"
-								height="450px" />
-						</VBox>
-					</layout:contentAreas>
-				</layout:Splitter>
+			<VBox class="obsOptLayout">
+				<!-- Description -->
+				<Text text="{/description}" class="obsOptDescription" />
+
+				<!-- Comparison charts side by side -->
+				<html:div class="obsCompareGrid">
+					<!-- Before -->
+					<html:div class="obsCompareCard">
+						<html:div class="obsCompareHeader">
+							<html:span class="obsCompareBadge before">BEFORE</html:span>
+							<html:span class="obsCompareTitle">Unoptimized</html:span>
+						</html:div>
+						<app:EChart
+							id="chartBefore"
+							width="100%"
+							height="360px" />
+					</html:div>
+					<!-- After -->
+					<html:div class="obsCompareCard">
+						<html:div class="obsCompareHeader">
+							<html:span class="obsCompareBadge after">AFTER</html:span>
+							<html:span class="obsCompareTitle">Optimized</html:span>
+						</html:div>
+						<app:EChart
+							id="chartAfter"
+							width="100%"
+							height="360px" />
+					</html:div>
+				</html:div>
+
+				<!-- Performance metrics table -->
 				<Table
 					id="performanceTable"
 					items="{/performanceData}"
-					class="sapUiMediumMarginTop">
+					busy="{/measuring}"
+					busyIndicatorDelay="0">
 					<columns>
-						<Column>
-							<Text text="Metric" />
-						</Column>
-						<Column>
-							<Text text="Before" />
-						</Column>
-						<Column>
-							<Text text="After" />
-						</Column>
-						<Column>
-							<Text text="Improvement" />
-						</Column>
+						<Column><Text text="METRIC" /></Column>
+						<Column><Text text="BEFORE" /></Column>
+						<Column><Text text="AFTER" /></Column>
+						<Column><Text text="IMPROVEMENT" /></Column>
 					</columns>
 					<items>
 						<ColumnListItem>
@@ -66,7 +71,7 @@
 								<Text text="{metric}" />
 								<Text text="{before}" />
 								<Text text="{after}" />
-								<Text text="{improvement}" />
+								<Text text="{improvement}" class="{improvementClass}" />
 							</cells>
 						</ColumnListItem>
 					</items>

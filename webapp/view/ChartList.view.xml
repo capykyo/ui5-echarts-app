@@ -3,30 +3,36 @@
 	xmlns:mvc="sap.ui.core.mvc"
 	xmlns="sap.m"
 	xmlns:core="sap.ui.core"
+	xmlns:html="http://www.w3.org/1999/xhtml"
 	displayBlock="true">
 	<Page
-		title="ECharts Chart Gallery"
+		title="ECharts Observatory"
 		showNavButton="false">
 		<headerContent>
+			<ToggleButton
+				id="mockDataToggle"
+				text="Mock Data"
+				icon="sap-icon://database"
+				pressed="{/useMockData}"
+				press="onMockDataToggle"
+				type="Transparent" />
 			<Button
 				icon="sap-icon://action-settings"
 				text="Optimization"
 				press="onOptimizationPress"
-				type="Emphasized" />
+				type="Transparent" />
 		</headerContent>
 		<content>
-			<List
-				id="chartList"
-				items="{/charts}"
-				mode="SingleSelectMaster"
-				selectionChange="onChartSelect">
-				<StandardListItem
-					title="{name}"
-					description="{description}"
-					icon="{icon}"
-					type="Navigation"
-					press="onChartPress" />
-			</List>
+			<!-- Page header decoration -->
+			<VBox class="obsPageHeader">
+				<Text text="DATA VISUALIZATION SUITE" class="obsHeaderLabel" />
+				<Title text="Chart Gallery" level="H1" class="obsHeaderTitle" />
+				<Text text="Select a visualization type to explore live data" class="obsHeaderSub" />
+				<html:div class="obsHeaderSep" />
+			</VBox>
+
+			<!-- Card grid rendered via custom HTML template in controller -->
+			<html:div id="obsChartGrid" class="obsChartGrid" />
 		</content>
 	</Page>
 </mvc:View>

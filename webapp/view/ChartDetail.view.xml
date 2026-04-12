@@ -2,21 +2,44 @@
 	controllerName="ui5.echarts.app.controller.ChartDetail"
 	xmlns:mvc="sap.ui.core.mvc"
 	xmlns="sap.m"
-	xmlns:app="ui5.echarts.app.controls"
+	xmlns:html="http://www.w3.org/1999/xhtml"
 	displayBlock="true">
 	<Page
 		title="{/title}"
 		showNavButton="true"
 		navButtonPress="onNavBack">
+		<headerContent>
+			<ToggleButton
+				id="mockDataToggle"
+				text="Mock Data"
+				icon="sap-icon://database"
+				pressed="{/useMockData}"
+				press="onMockDataToggle"
+				type="Transparent" />
+		</headerContent>
 		<content>
-			<VBox id="chartContainer" class="sapUiMediumMargin">
-				<Text text="{/description}" class="sapUiMediumMarginBottom" />
-				<app:EChart
-					id="chart"
-					width="100%"
-					height="500px"
-					visible="false" />
-			</VBox>
+			<!-- Meta strip -->
+			<html:div class="obsChartMeta">
+				<Text text="LIVE DATA" class="obsMetaBadge" />
+				<Text text="{/description}" class="obsMetaDesc" />
+			</html:div>
+
+			<!-- Chart canvas -->
+			<VBox id="chartContainer" class="obsChartWrapper" />
+
+			<!-- Status bar -->
+			<html:div class="obsStatusBar">
+				<html:span class="obsStatusItem">
+					<html:span class="obsStatusDot" />
+					<Text text="{/dataSource}" class="obsStatusText" />
+				</html:span>
+				<html:span class="obsStatusItem">
+					APACHE ECHARTS 6.0
+				</html:span>
+				<html:span class="obsStatusItem">
+					SAP UI5 1.143
+				</html:span>
+			</html:div>
 		</content>
 	</Page>
 </mvc:View>

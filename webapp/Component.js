@@ -1,8 +1,9 @@
 sap.ui.define([
 	"sap/ui/core/UIComponent",
 	"sap/ui/Device",
-	"ui5/echarts/app/model/models"
-], function (UIComponent, Device, models) {
+	"ui5/echarts/app/model/models",
+	"ui5/echarts/app/model/ChartData"
+], function (UIComponent, Device, models, ChartData) {
 	"use strict";
 
 	return UIComponent.extend("ui5.echarts.app.Component", {
@@ -14,14 +15,13 @@ sap.ui.define([
 			events: {}
 		},
 
-		/**
-		 * The component is initialized by UI5 automatically during the startup of the app and calls the init method once.
-		 * @public
-		 * @override
-		 */
 		init: function () {
 			// Call the base component's init function
 			UIComponent.prototype.init.apply(this, arguments);
+
+			// Restore persisted data-source preference as early as possible
+			var bUseMock = localStorage.getItem("ui5.echarts.useMockData") === "true";
+			ChartData.setUseMockData(bUseMock);
 
 			// Set the device model
 			this.setModel(models.createDeviceModel(), "device");

@@ -1,9 +1,10 @@
 sap.ui.define([
 	"sap/ui/core/mvc/Controller",
 	"sap/base/Log",
+	"sap/m/MessageToast",
 	"ui5/echarts/app/model/ChartData",
 	"ui5/echarts/app/utils/ThemeColors"
-], function (Controller, Log, ChartData, ThemeColors) {
+], function (Controller, Log, MessageToast, ChartData, ThemeColors) {
 	"use strict";
 
 	return Controller.extend("ui5.echarts.app.controller.chart.RadarChart", {
@@ -13,10 +14,15 @@ sap.ui.define([
 
 		_loadData: function () {
 			ChartData.loadDataForChart("radar").then(function (oData) {
-				// For radar chart, we need to load additional data
-				this._loadRadarData(oData.data);
+				// Mock data is pre-shaped; skip the extra Northwind fetches
+				if (oData._mockReady) {
+					this._renderChart(oData.data);
+				} else {
+					this._loadRadarData(oData.data);
+				}
 			}.bind(this)).catch(function (oError) {
 				Log.error("Failed to load radar chart data", oError);
+				MessageToast.show(oError.message || "Failed to load data");
 			});
 		},
 

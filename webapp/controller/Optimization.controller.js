@@ -42,7 +42,8 @@ sap.ui.define([
 				scenarios: aScenarios,
 				selectedScenario: "sampling",
 				description: "",
-				performanceData: []
+				performanceData: [],
+				measuring: false
 			});
 			this.getView().setModel(oModel);
 
@@ -63,6 +64,11 @@ sap.ui.define([
 		},
 
 		_loadScenario: function (sScenario) {
+			// Show busy state immediately and clear stale data
+			const oModel = this.getView().getModel();
+			oModel.setProperty("/measuring", true);
+			oModel.setProperty("/performanceData", []);
+
 			switch (sScenario) {
 				case "sampling":
 					this._loadSamplingScenario();
@@ -111,7 +117,8 @@ sap.ui.define([
 		},
 
 		_loadPerformanceScenario: function () {
-			// This will show performance metrics in a table
+			this._oPerformanceMonitor.reset();
+
 			const oGenerator = new DataGenerator();
 			const mVolumes = {
 				"1K": oGenerator.generateTimeSeriesData(1000),
@@ -119,10 +126,9 @@ sap.ui.define([
 				"100K": oGenerator.generateTimeSeriesData(100000)
 			};
 
-			// Render before and after for 10K data
 			this._renderChart("chartBefore", mVolumes["10K"], false);
 			this._renderChart("chartAfter", mVolumes["10K"], true);
-			
+
 			setTimeout(function () {
 				this._comparePerformance("performance");
 			}.bind(this), 2000);
@@ -192,12 +198,14 @@ sap.ui.define([
 		},
 
 		_loadProgressiveScenario: function () {
+			this._oPerformanceMonitor.reset();
+
 			const oGenerator = new DataGenerator();
 			const aData = oGenerator.generateTimeSeriesData(10000);
 
 			this._renderChart("chartBefore", aData, false);
 			this._renderChart("chartAfter", aData, true);
-			
+
 			setTimeout(function () {
 				this._comparePerformance("progressive");
 			}.bind(this), 2000);
@@ -296,43 +304,81 @@ sap.ui.define([
 
 		_comparePerformance: function (sScenario) {
 			const oReport = this._oPerformanceMonitor.generateReport();
-			const aPerformanceData = [];
 
-			// Extract metrics
-			const fBeforeTime = oReport.timings["chartBefore-render"] ? 
+			// Render timings
+			const fBeforeTime = oReport.timings["chartBefore-render"] ?
 				oReport.timings["chartBefore-render"].average : 0;
-			const fAfterTime = oReport.timings["chartAfter-render"] ? 
+			const fAfterTime = oReport.timings["chartAfter-render"] ?
 				oReport.timings["chartAfter-render"].average : 0;
 
-			const oBeforeMemory = oReport.snapshots.find(function (s) {
-				return s.label === "chartBefore-after";
-			});
-			const oAfterMemory = oReport.snapshots.find(function (s) {
-				return s.label === "chartAfter-after";
-			});
+			// Memory: use snapshots when available, fall back to current heap
+			const oBeforeSnap = oReport.snapshots.find(function (s) { return s.label === "chartBefore-after"; });
+			const oAfterSnap  = oReport.snapshots.find(function (s) { return s.label === "chartAfter-after"; });
+			const oCurrent    = this._oPerformanceMonitor.getMemoryUsage();
 
-			const fBeforeMemory = oBeforeMemory ? (oBeforeMemory.memory.used / 1024 / 1024).toFixed(2) : "N/A";
-			const fAfterMemory = oAfterMemory ? (oAfterMemory.memory.used / 1024 / 1024).toFixed(2) : "N/A";
+			let sBeforeMemory, sAfterMemory, sMemoryImprovement;
+			if (oBeforeSnap && oAfterSnap) {
+				const fBefore = oBeforeSnap.memory.used / 1024 / 1024;
+				const fAfter  = oAfterSnap.memory.used  / 1024 / 1024;
+				sBeforeMemory     = fBefore.toFixed(2) + " MB";
+				sAfterMemory      = fAfter.toFixed(2)  + " MB";
+				const fDiff       = fAfter - fBefore;
+				sMemoryImprovement = fDiff < 0
+					? (-fDiff).toFixed(2) + " MB saved"
+					: "+" + fDiff.toFixed(2) + " MB";
+			} else if (oCurrent) {
+				// Snapshots not captured — show current heap only
+				const fMB = (oCurrent.used / 1024 / 1024).toFixed(2);
+				sBeforeMemory      = fMB + " MB";
+				sAfterMemory       = fMB + " MB";
+				sMemoryImprovement = "N/A";
+			} else {
+				sBeforeMemory      = "N/A";
+				sAfterMemory       = "N/A";
+				sMemoryImprovement = "N/A";
+			}
 
-			// Calculate improvements
-			const fTimeImprovement = fBeforeTime > 0 ? 
-				((fBeforeTime - fAfterTime) / fBeforeTime * 100).toFixed(2) + "%" : "N/A";
+			// Render time improvement
+			let sTimeImprovement;
+			if (sScenario === "data-volume") {
+				if (fBeforeTime > 0) {
+					const fOverheadPct = ((fAfterTime - fBeforeTime) / fBeforeTime * 100);
+					sTimeImprovement = fOverheadPct > 0
+						? "+" + fOverheadPct.toFixed(2) + "% overhead"
+						: "N/A";
+				} else {
+					sTimeImprovement = "N/A";
+				}
+			} else {
+				sTimeImprovement = fBeforeTime > 0
+					? ((fBeforeTime - fAfterTime) / fBeforeTime * 100).toFixed(2) + "%"
+					: "N/A";
+			}
 
-			aPerformanceData.push({
-				metric: "Render Time",
-				before: fBeforeTime.toFixed(2) + " ms",
-				after: fAfterTime.toFixed(2) + " ms",
-				improvement: fTimeImprovement
-			});
+			const aPerformanceData = [
+				{
+					metric: "Render Time",
+					before: fBeforeTime.toFixed(2) + " ms",
+					after:  fAfterTime.toFixed(2)  + " ms",
+					improvement: sTimeImprovement,
+					improvementClass: (sScenario === "data-volume" || sTimeImprovement === "N/A")
+						? ""
+						: parseFloat(sTimeImprovement) > 0 ? "obsImprovementGood" : "obsImprovementBad"
+				},
+				{
+					metric: "Memory Usage",
+					before: sBeforeMemory,
+					after:  sAfterMemory,
+					improvement: sMemoryImprovement,
+					improvementClass: sMemoryImprovement === "N/A" || sMemoryImprovement.startsWith("+")
+						? ""
+						: "obsImprovementGood"
+				}
+			];
 
-			aPerformanceData.push({
-				metric: "Memory Usage",
-				before: fBeforeMemory + " MB",
-				after: fAfterMemory + " MB",
-				improvement: "N/A"
-			});
-
-			this.getView().getModel().setProperty("/performanceData", aPerformanceData);
+			const oModel = this.getView().getModel();
+			oModel.setProperty("/performanceData", aPerformanceData);
+			oModel.setProperty("/measuring", false);
 		},
 
 		onNavBack: function () {

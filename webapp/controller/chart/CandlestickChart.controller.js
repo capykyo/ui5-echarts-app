@@ -1,9 +1,10 @@
 sap.ui.define([
 	"sap/ui/core/mvc/Controller",
 	"sap/base/Log",
+	"sap/m/MessageToast",
 	"ui5/echarts/app/model/ChartData",
 	"ui5/echarts/app/utils/ThemeColors"
-], function (Controller, Log, ChartData, ThemeColors) {
+], function (Controller, Log, MessageToast, ChartData, ThemeColors) {
 	"use strict";
 
 	return Controller.extend("ui5.echarts.app.controller.chart.CandlestickChart", {
@@ -16,6 +17,7 @@ sap.ui.define([
 				this._renderChart(oData.data);
 			}.bind(this)).catch(function (oError) {
 				Log.error("Failed to load candlestick data", oError);
+				MessageToast.show(oError.message || "Failed to load data");
 			});
 		},
 

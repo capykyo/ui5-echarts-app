@@ -1,7 +1,32 @@
 {
   "permissions": {
     "allow": [
-      "Skill(update-config)"
+      "Skill(update-config)",
+      "Bash(npm run:*)",
+      "Bash(npx ui5:*)",
+      "Bash(./node_modules/.bin/ui5 serve:*)",
+      "mcp__chrome-devtools__navigate_page",
+      "mcp__chrome-devtools__take_screenshot",
+      "mcp__chrome-devtools__list_console_messages",
+      "mcp__chrome-devtools__list_network_requests",
+      "mcp__chrome-devtools__evaluate_script",
+      "mcp__chrome-devtools__take_snapshot",
+      "mcp__chrome-devtools__wait_for",
+      "mcp__chrome-devtools__click",
+      "Bash(grep -n \"MessageToast\" *.controller.js)",
+      "Bash(curl -s http://localhost:3000/Products?_limit=1)",
+      "Bash(curl -s http://localhost:3000/Products)",
+      "Bash(curl -s http://localhost:3000/Sales)",
+      "Bash(curl -s http://localhost:3000/TimeSeries)",
+      "Bash(curl -s \"http://localhost:3000/Products?_sort=Price&_order=desc&_limit=3\")",
+      "Bash(curl -s \"http://localhost:3000/Products?_limit=3\")",
+      "Bash(curl -s \"http://localhost:3000/Products?_start=0&_end=3\")",
+      "Bash(node -e \"const pkg = require\\('./node_modules/json-server/package.json'\\); console.log\\(pkg.version\\)\")",
+      "Bash(curl -s \"http://localhost:3000/Products?_per_page=3\")",
+      "Bash(curl -s \"http://localhost:3000/Products?_page=1&_per_page=3\")",
+      "Bash(node -e ':*)",
+      "mcp__chrome-devtools__list_pages",
+      "mcp__chrome-devtools__fill"
     ]
   }
 }

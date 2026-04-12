@@ -1,68 +1,768 @@
-/* Custom styles for ECharts integration */
+/* ============================================================
+   OBSERVATORY DESIGN SYSTEM — UI5 ECharts App
+   Dark data visualization theme: precision meets depth
+   ============================================================ */
 
-/* Ensure Page content has proper height */
-.sapMPageContent {
-	min-height: 500px;
-	height: auto !important;
-	/* Optimize touch events */
-	touch-action: pan-y;
+@import url('https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Syne:wght@400;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap');
+
+/* ---- CSS Variables ---- */
+:root {
+  --obs-bg:          #0b0d12;
+  --obs-surface:     #111520;
+  --obs-surface-2:   #181d2a;
+  --obs-surface-3:   #1e2535;
+  --obs-border:      rgba(255,255,255,0.07);
+  --obs-border-glow: rgba(246,190,79,0.25);
+  --obs-amber:       #f6be4f;
+  --obs-amber-dim:   #c48b1a;
+  --obs-amber-glow:  rgba(246,190,79,0.12);
+  --obs-teal:        #3dd9c6;
+  --obs-teal-dim:    rgba(61,217,198,0.15);
+  --obs-red:         #ff5c6a;
+  --obs-blue:        #5b9cf6;
+  --obs-text-pri:    #e8ecf4;
+  --obs-text-sec:    #8993a8;
+  --obs-text-muted:  #4a5168;
+  --obs-mono:        'Space Mono', monospace;
+  --obs-display:     'Syne', sans-serif;
+  --obs-body:        'DM Sans', sans-serif;
+  --obs-radius:      6px;
+  --obs-radius-lg:   12px;
+  --obs-shadow:      0 4px 24px rgba(0,0,0,0.6);
+  --obs-shadow-card: 0 2px 16px rgba(0,0,0,0.5), 0 0 0 1px var(--obs-border);
+  --obs-transition:  0.2s cubic-bezier(0.4,0,0.2,1);
 }
 
-/* Ensure EChart container has proper dimensions */
-[id*="echart"] {
-	min-height: 500px !important;
-	height: 500px !important;
-	display: block !important;
-	/* Optimize touch events to reduce warnings */
-	touch-action: manipulation;
-	-webkit-overflow-scrolling: touch;
+/* ============================================================
+   GLOBAL RESETS & BODY
+   ============================================================ */
+
+html, body, .sapUiBody {
+  background-color: var(--obs-bg) !important;
+  color: var(--obs-text-pri) !important;
+  font-family: var(--obs-body) !important;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-/* Fix for Page content section */
-section[id*="page0-cont"] {
-	min-height: 500px !important;
-	height: auto !important;
-	/* Optimize scrolling performance */
-	touch-action: pan-y;
-	will-change: scroll-position;
-	transform: translateZ(0);
+/* Subtle noise grain overlay on body */
+.sapUiBody::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9999;
+  opacity: 0.025;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 128px;
 }
 
-/* Optimize ECharts canvas for better touch performance */
-[id*="echart"] canvas {
-	touch-action: none !important;
-	-webkit-tap-highlight-color: transparent !important;
-	pointer-events: auto;
+/* ============================================================
+   SAP APP SHELL OVERRIDES
+   ============================================================ */
+
+.sapMApp {
+  background-color: var(--obs-bg) !important;
 }
 
-/* Optimize Page scrolling */
+/* ---- Page / Shell ---- */
 .sapMPage {
-	touch-action: pan-y;
+  background-color: var(--obs-bg) !important;
+  touch-action: pan-y;
 }
 
-/* Suppress touchmove warnings for UI5 internal elements */
-.sapUiBody,
-.sapMPage,
-.sapMPageContent,
-.sapMList,
-.sapMListItem {
-	touch-action: pan-y;
+.sapMPageHeader,
+.sapMBar {
+  background: var(--obs-surface) !important;
+  border-bottom: 1px solid var(--obs-border) !important;
+  box-shadow: 0 1px 0 var(--obs-border), 0 4px 16px rgba(0,0,0,0.4) !important;
+  backdrop-filter: blur(12px);
 }
 
-/* Optimize all interactive elements */
+.sapMBarMiddle .sapMTitle,
+.sapMTitle {
+  font-family: var(--obs-display) !important;
+  font-weight: 700 !important;
+  font-size: 16px !important;
+  letter-spacing: 0.04em !important;
+  color: var(--obs-text-pri) !important;
+  text-transform: uppercase;
+}
+
+/* Back button */
+.sapMBarLeft .sapMButton {
+  color: var(--obs-amber) !important;
+}
+
+.sapMBarLeft .sapMButtonIcon {
+  color: var(--obs-amber) !important;
+}
+
+/* Page content area */
+.sapMPageContent {
+  background-color: var(--obs-bg) !important;
+  min-height: 100vh;
+  touch-action: pan-y;
+}
+
+/* ============================================================
+   CHART GALLERY — CARD GRID
+   ============================================================ */
+
+/* Grid container for chart cards */
+.obsChartGrid {
+  display: grid !important;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 16px;
+  padding: 24px 20px;
+  animation: obsGridIn 0.5s cubic-bezier(0.4,0,0.2,1) both;
+}
+
+@keyframes obsGridIn {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Individual chart cards */
+.obsChartCard {
+  position: relative;
+  background: var(--obs-surface) !important;
+  border: 1px solid var(--obs-border) !important;
+  border-radius: var(--obs-radius-lg) !important;
+  padding: 20px !important;
+  cursor: pointer;
+  transition: border-color var(--obs-transition),
+              box-shadow var(--obs-transition),
+              transform var(--obs-transition),
+              background var(--obs-transition);
+  overflow: hidden;
+  box-shadow: var(--obs-shadow-card);
+}
+
+.obsChartCard::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 30% 0%, var(--obs-amber-glow), transparent 60%);
+  opacity: 0;
+  transition: opacity var(--obs-transition);
+  pointer-events: none;
+}
+
+.obsChartCard:hover {
+  border-color: var(--obs-border-glow) !important;
+  transform: translateY(-3px);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.6), 0 0 0 1px var(--obs-border-glow), 0 0 24px var(--obs-amber-glow) !important;
+}
+
+.obsChartCard:hover::before {
+  opacity: 1;
+}
+
+.obsChartCard:active {
+  transform: translateY(-1px);
+}
+
+/* Card index number (decorative) */
+.obsCardIndex {
+  position: absolute;
+  top: 14px;
+  right: 16px;
+  font-family: var(--obs-mono);
+  font-size: 10px;
+  color: var(--obs-text-muted);
+  letter-spacing: 0.1em;
+}
+
+/* Card icon */
+.obsCardIcon {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--obs-amber-glow);
+  border: 1px solid rgba(246,190,79,0.2);
+  border-radius: 8px;
+  margin-bottom: 14px;
+  font-size: 18px !important;
+  color: var(--obs-amber) !important;
+}
+
+.obsCardIcon .sapUiIcon {
+  color: var(--obs-amber) !important;
+  font-size: 18px !important;
+}
+
+/* Card title */
+.obsCardTitle {
+  font-family: var(--obs-display) !important;
+  font-size: 15px !important;
+  font-weight: 700 !important;
+  color: var(--obs-text-pri) !important;
+  margin-bottom: 6px !important;
+  letter-spacing: 0.01em;
+}
+
+/* Card description */
+.obsCardDesc {
+  font-family: var(--obs-body) !important;
+  font-size: 12px !important;
+  color: var(--obs-text-sec) !important;
+  line-height: 1.5 !important;
+  font-weight: 300 !important;
+}
+
+/* Arrow indicator */
+.obsCardArrow {
+  position: absolute;
+  bottom: 16px;
+  right: 16px;
+  width: 24px;
+  height: 24px;
+  border: 1px solid var(--obs-border);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--obs-text-muted);
+  font-size: 10px;
+  transition: border-color var(--obs-transition), color var(--obs-transition), transform var(--obs-transition);
+}
+
+.obsChartCard:hover .obsCardArrow {
+  border-color: var(--obs-amber);
+  color: var(--obs-amber);
+  transform: translateX(2px);
+}
+
+/* Staggered card animation */
+.obsChartCard:nth-child(1)  { animation-delay: 0.05s; }
+.obsChartCard:nth-child(2)  { animation-delay: 0.10s; }
+.obsChartCard:nth-child(3)  { animation-delay: 0.15s; }
+.obsChartCard:nth-child(4)  { animation-delay: 0.20s; }
+.obsChartCard:nth-child(5)  { animation-delay: 0.25s; }
+.obsChartCard:nth-child(6)  { animation-delay: 0.30s; }
+.obsChartCard:nth-child(7)  { animation-delay: 0.35s; }
+.obsChartCard:nth-child(8)  { animation-delay: 0.40s; }
+.obsChartCard:nth-child(9)  { animation-delay: 0.45s; }
+.obsChartCard:nth-child(10) { animation-delay: 0.50s; }
+
+.obsChartCard {
+  animation: obsCardIn 0.4s cubic-bezier(0.4,0,0.2,1) both;
+}
+
+@keyframes obsCardIn {
+  from { opacity: 0; transform: translateY(20px) scale(0.97); }
+  to   { opacity: 1; transform: translateY(0)  scale(1); }
+}
+
+/* ============================================================
+   HEADER DECORATION — Gallery page top strip
+   ============================================================ */
+
+.obsPageHeader {
+  padding: 24px 20px 0;
+  margin-bottom: -8px;
+}
+
+.obsHeaderLabel {
+  font-family: var(--obs-mono) !important;
+  font-size: 10px !important;
+  color: var(--obs-amber) !important;
+  letter-spacing: 0.15em !important;
+  text-transform: uppercase !important;
+  margin-bottom: 4px !important;
+}
+
+.obsHeaderTitle {
+  font-family: var(--obs-display) !important;
+  font-size: 28px !important;
+  font-weight: 800 !important;
+  color: var(--obs-text-pri) !important;
+  line-height: 1.1 !important;
+  margin-bottom: 8px !important;
+}
+
+.obsHeaderSub {
+  font-family: var(--obs-body) !important;
+  font-size: 13px !important;
+  color: var(--obs-text-sec) !important;
+  font-weight: 300 !important;
+}
+
+/* Separator bar */
+.obsHeaderSep {
+  height: 1px;
+  background: linear-gradient(to right, var(--obs-amber-dim), transparent);
+  margin: 16px 0 0;
+}
+
+/* ============================================================
+   OPTIMIZATION BUTTON
+   ============================================================ */
+
+.sapMBarRight .sapMButton {
+  background: transparent !important;
+  border: 1px solid var(--obs-border-glow) !important;
+  color: var(--obs-amber) !important;
+  font-family: var(--obs-mono) !important;
+  font-size: 11px !important;
+  letter-spacing: 0.08em !important;
+  border-radius: var(--obs-radius) !important;
+  padding: 0 12px !important;
+  transition: background var(--obs-transition), box-shadow var(--obs-transition) !important;
+}
+
+.sapMBarRight .sapMButton:hover {
+  background: var(--obs-amber-glow) !important;
+  box-shadow: 0 0 12px var(--obs-amber-glow) !important;
+}
+
+/* ============================================================
+   CHART DETAIL PAGE
+   ============================================================ */
+
+.obsDetailLayout {
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+/* Meta strip above chart */
+.obsChartMeta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 20px 12px;
+  border-bottom: 1px solid var(--obs-border);
+}
+
+.obsMetaBadge {
+  font-family: var(--obs-mono) !important;
+  font-size: 10px !important;
+  color: var(--obs-amber) !important;
+  background: var(--obs-amber-glow) !important;
+  border: 1px solid rgba(246,190,79,0.2) !important;
+  border-radius: 4px !important;
+  padding: 2px 8px !important;
+  letter-spacing: 0.1em !important;
+  text-transform: uppercase !important;
+}
+
+.obsMetaDesc {
+  font-family: var(--obs-body) !important;
+  font-size: 13px !important;
+  color: var(--obs-text-sec) !important;
+  font-weight: 300 !important;
+  flex: 1 !important;
+}
+
+/* Chart canvas wrapper */
+.obsChartWrapper {
+  position: relative;
+  flex: 1;
+  background: var(--obs-surface) !important;
+  margin: 16px 20px !important;
+  border-radius: var(--obs-radius-lg) !important;
+  border: 1px solid var(--obs-border) !important;
+  overflow: hidden;
+  box-shadow: var(--obs-shadow-card);
+}
+
+/* Corner decorations on chart wrapper */
+.obsChartWrapper::before,
+.obsChartWrapper::after {
+  content: '';
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  border-color: var(--obs-amber-dim);
+  border-style: solid;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.obsChartWrapper::before {
+  top: 8px;
+  left: 8px;
+  border-width: 1px 0 0 1px;
+}
+
+.obsChartWrapper::after {
+  bottom: 8px;
+  right: 8px;
+  border-width: 0 1px 1px 0;
+}
+
+/* EChart canvas height */
+[id*="echart"],
+div[id*="echart"] {
+  min-height: 460px !important;
+  height: 460px !important;
+  display: block !important;
+  touch-action: manipulation;
+  -webkit-overflow-scrolling: touch;
+}
+
+[id*="echart"] canvas {
+  touch-action: none !important;
+  -webkit-tap-highlight-color: transparent !important;
+  pointer-events: auto;
+}
+
+._echarts_instance_ {
+  touch-action: manipulation !important;
+}
+
+/* Status bar below chart */
+.obsStatusBar {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 10px 20px 16px;
+}
+
+.obsStatusItem {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--obs-mono);
+  font-size: 10px;
+  color: var(--obs-text-muted);
+  letter-spacing: 0.08em;
+}
+
+.obsStatusDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--obs-teal);
+  animation: obsPulse 2s ease-in-out infinite;
+}
+
+@keyframes obsPulse {
+  0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(61,217,198,0.5); }
+  50%       { opacity: 0.7; box-shadow: 0 0 0 4px rgba(61,217,198,0); }
+}
+
+/* ============================================================
+   OPTIMIZATION PAGE
+   ============================================================ */
+
+.obsOptLayout {
+  padding: 20px;
+}
+
+.obsOptDescription {
+  font-family: var(--obs-body) !important;
+  font-size: 13px !important;
+  color: var(--obs-text-sec) !important;
+  font-weight: 300 !important;
+  line-height: 1.6 !important;
+  margin-bottom: 20px !important;
+  padding: 12px 16px !important;
+  background: var(--obs-surface) !important;
+  border-left: 2px solid var(--obs-amber) !important;
+  border-radius: 0 var(--obs-radius) var(--obs-radius) 0 !important;
+}
+
+/* Split comparison cards */
+.obsCompareGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.obsCompareCard {
+  background: var(--obs-surface) !important;
+  border: 1px solid var(--obs-border) !important;
+  border-radius: var(--obs-radius-lg) !important;
+  overflow: hidden;
+}
+
+.obsCompareHeader {
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--obs-border);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.obsCompareBadge {
+  font-family: var(--obs-mono);
+  font-size: 9px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 2px 7px;
+  border-radius: 3px;
+}
+
+.obsCompareBadge.before {
+  background: rgba(255,92,106,0.12);
+  color: var(--obs-red);
+  border: 1px solid rgba(255,92,106,0.2);
+}
+
+.obsCompareBadge.after {
+  background: rgba(61,217,198,0.1);
+  color: var(--obs-teal);
+  border: 1px solid rgba(61,217,198,0.2);
+}
+
+.obsCompareTitle {
+  font-family: var(--obs-display) !important;
+  font-size: 13px !important;
+  font-weight: 600 !important;
+  color: var(--obs-text-pri) !important;
+}
+
+/* Performance table */
+.sapMTable {
+  background: var(--obs-surface) !important;
+  border: 1px solid var(--obs-border) !important;
+  border-radius: var(--obs-radius-lg) !important;
+  overflow: hidden;
+}
+
+.sapMListTblHeaderCell {
+  background: var(--obs-surface-2) !important;
+  border-bottom: 1px solid var(--obs-border) !important;
+  font-family: var(--obs-mono) !important;
+  font-size: 10px !important;
+  letter-spacing: 0.1em !important;
+  text-transform: uppercase !important;
+  color: var(--obs-text-sec) !important;
+  padding: 10px 14px !important;
+}
+
+.sapMListTblCell {
+  border-bottom: 1px solid var(--obs-border) !important;
+  font-family: var(--obs-body) !important;
+  font-size: 13px !important;
+  color: var(--obs-text-pri) !important;
+  padding: 10px 14px !important;
+}
+
+.sapMLIBContent {
+  background: transparent !important;
+}
+
+.sapMListItem,
+.sapMColumnListItem {
+  background: transparent !important;
+}
+
+.sapMColumnListItem:hover {
+  background: var(--obs-surface-2) !important;
+}
+
+/* Scenario select */
+.sapMBarRight .sapMSelect {
+  background: var(--obs-surface-2) !important;
+  border: 1px solid var(--obs-border) !important;
+  border-radius: var(--obs-radius) !important;
+  color: var(--obs-text-pri) !important;
+  font-family: var(--obs-body) !important;
+  font-size: 13px !important;
+}
+
+/* ============================================================
+   UI5 LIST OVERRIDES (fallback for existing list items)
+   ============================================================ */
+
+.sapMList {
+  background: transparent !important;
+  border: none !important;
+}
+
+.sapMListItems {
+  background: transparent !important;
+}
+
+.sapMLIB,
+.sapMSLI,
+.sapMStdListItem {
+  background: var(--obs-surface) !important;
+  border-bottom: 1px solid var(--obs-border) !important;
+  color: var(--obs-text-pri) !important;
+}
+
+.sapMLIB:hover,
+.sapMSLI:hover {
+  background: var(--obs-surface-2) !important;
+}
+
+.sapMSLITitle {
+  font-family: var(--obs-display) !important;
+  font-weight: 600 !important;
+  font-size: 14px !important;
+  color: var(--obs-text-pri) !important;
+}
+
+.sapMSLIDescription {
+  font-family: var(--obs-body) !important;
+  font-size: 12px !important;
+  color: var(--obs-text-sec) !important;
+  font-weight: 300 !important;
+}
+
+.sapMSLIImgIcon {
+  color: var(--obs-amber) !important;
+}
+
+/* Navigation arrow */
+.sapMSLIArrow {
+  color: var(--obs-text-muted) !important;
+}
+
+/* ============================================================
+   SCROLLBAR STYLING
+   ============================================================ */
+
+::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--obs-bg);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--obs-surface-3);
+  border-radius: 2px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--obs-text-muted);
+}
+
+/* ============================================================
+   FOCUS STATES (accessibility)
+   ============================================================ */
+
+*:focus-visible {
+  outline: 2px solid var(--obs-amber) !important;
+  outline-offset: 2px !important;
+}
+
+/* ============================================================
+   UTILITY ANIMATIONS
+   ============================================================ */
+
+@keyframes obsFadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes obsSlideUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ============================================================
+   LOADING STATE
+   ============================================================ */
+
+.obsBusyIndicator {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 48px;
+  color: var(--obs-text-muted);
+  font-family: var(--obs-mono);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+}
+
+.obsLoader {
+  width: 32px;
+  height: 32px;
+  border: 2px solid var(--obs-border);
+  border-top-color: var(--obs-amber);
+  border-radius: 50%;
+  animation: obsSpin 0.8s linear infinite;
+}
+
+@keyframes obsSpin {
+  to { transform: rotate(360deg); }
+}
+
+/* ============================================================
+   SAP BUSY INDICATOR OVERRIDE
+   ============================================================ */
+
+.sapUiLocalBusyIndicator {
+  background: rgba(11,13,18,0.8) !important;
+}
+
+/* ============================================================
+   TOUCH PERFORMANCE (preserve original optimizations)
+   ============================================================ */
+
+section[id*="page0-cont"] {
+  min-height: 500px !important;
+  height: auto !important;
+  touch-action: pan-y;
+  will-change: scroll-position;
+  transform: translateZ(0);
+}
+
 .sapMBar,
 .sapMTitle,
 .sapMButton {
-	touch-action: manipulation;
+  touch-action: manipulation;
 }
 
-/* Optimize chart container specifically */
 div[id*="echart"],
 div[class*="echart"] {
-	touch-action: manipulation;
+  touch-action: manipulation;
 }
 
-/* Prevent passive event listener warnings on chart interactions */
-._echarts_instance_ {
-	touch-action: manipulation !important;
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+
+@media (max-width: 600px) {
+  .obsChartGrid {
+    grid-template-columns: 1fr;
+    padding: 16px 12px;
+    gap: 12px;
+  }
+
+  .obsCompareGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .obsHeaderTitle {
+    font-size: 22px !important;
+  }
+
+  [id*="echart"],
+  div[id*="echart"] {
+    min-height: 320px !important;
+    height: 320px !important;
+  }
 }
+
+@media (min-width: 900px) {
+  .obsChartGrid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (min-width: 1200px) {
+  .obsChartGrid {
+    grid-template-columns: repeat(4, 1fr);
+    padding: 28px 28px;
+  }
+}
+
+/* Performance table improvement column colors */
+.obsImprovementGood { color: #34d399 !important; font-weight: 600; }
+.obsImprovementBad  { color: #f43f5e !important; font-weight: 600; }
